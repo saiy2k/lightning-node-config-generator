@@ -5,237 +5,485 @@
       "description": {
         "Windows": "Config for Windows",
         "Linux": "Config for Linux",
-        "Mac OS": "Config for Mac OS"
+        "Mac OS": "Config for Mac OS",
+        "Plan9": "Config for Plan9"
       },
       "default": null,
-      "values": ["Windows", "Linux", "Mac OS"]
+      "values": ["Windows", "Linux", "Mac OS", "Plan9"]
     }
   },
-  "chain": {
-    "section": "Chain Selection",
-    "description": "Choose which network / blockchain to use.",
-    "chain": {
-      "name": "Chain",
-      "description": "Run this node on the given network.",
-      "description": {
-        "main": "Main Network",
-        "test": "Test Network.",
-        "regtest": "Regression Test Network"
-      },
-      "default": "main",
-      "values": [
-        "Mainnet [main]",
-        "Testnet [test]",
-        "Regtest [regtest]"
-      ]
-    },
-    "testnet": {
-      "name": "Testnet",
-      "description": "Run this node on the Bitcoin Test Network. Equivalent to -chain=test",
-      "default": 0
-    },
-    "regtest": {
-      "name": "Regtest",
-      "description": "Run this node on its own independent test network. Equivalent to -chain=regtest",
-      "default": 0
-    },
-    "signet": {
-      "name": "Signet",
-      "description": "Use the signet chain. Equivalent to -chain=signet. Note that the network is defined by the -signetchallenge parameter",
-      "default": 0
-    },
-    "signetchallenge": {
-      "name": "Signet Challenge",
-      "description": "Blocks must satisfy the given script to be considered valid (only for signet networks)"
-    },
-    "signetseednode": {
-      "name": "Signet Seed Node",
-      "description": "Specify a seed node for the signet network, in the hostname[:port] format, e.g. sig.net:1234 (may be used multiple times to specify multiple seed nodes)"
-    },
-    "vbparams": {
-      "name": "Version Bits Deployment Params",
-      "description": "Use given start/end times for specified version bits deployment. Regtest mode only, in format <deployment:start:end[:min_activation_height]>. Can be set multiple times.",
-      "default": ""
-    }
-  },
-  "core": {
-    "section": "Bitcoin Core",
-    "description": "Basic parameters regarding Bitcoin Core node operation.",
-    "alertnotify": {
-      "name": "Alert Notification",
-      "description": "Execute command when an alert (or long fork) is received (%s in cmd is replaced by message)",
-      "default": ""
-    },
-    "blockfilterindex": {
-      "name": "Block Filter Index",
-      "description": "Maintain an index of compact filters by block",
-      "description": {
-        "0": "Disable compact filters.",
-        "1": "Enable all compact filters.",
-        "basic": "Basic filters"
-      },
-      "default": "0",
-      "values": [
-        "Disable [0]",
-        "Enable All [1]",
-        "Basic Filters [basic]"
-      ]
-    },
-    "blocknotify": {
-      "name": "Block Notification",
-      "description": "Execute command when the best block changes (%s in cmd is replaced by block hash)",
-      "default": ""
-    },
-    "blocksdir": {
-      "name": "Block Data Storage Location",
-      "description": "Specify a non-default location to store blockchain data.",
-      "default": "$BASE/blocks"
-    },
-    "blocksonly": {
-      "name": "Blocks Only Mode",
-      "description": "Only download and relay blocks - ignore unconfirmed transaction",
-      "default": 0
-    },
-    "assumevalid": {
-      "name": "Assume Valid Chain History",
-      "description": "Assume that this block hash and its ancestors are valid. Skip their script verification (performance boost.) Set to 0 to verify all blocks. We recommend leaving value blank.",
-      "default": ""
-    },
-    "coinstatsindex": {
-      "name": "Coin Stats Index",
-      "description": "Maintain coinstats index used by the gettxoutsetinfo RPC.",
-      "default": 0
-    },
-    "daemon": {
-      "name": "Daemon Mode",
-      "description": "Run in the background as a daemon and accept commands.",
-      "default": 0
-    },
-    "daemonwait": {
-      "name": "Daemon Wait Mode",
-      "description": "Wait for initialization to be finished before exiting. This implies -daemon.",
-      "default": 0
-    },
+
+  "application": {
+    "section": "Application Options",
+    "description": "Basic parameters regarding LND Application",
+
     "datadir": {
       "name": "Data Storage Location",
-      "description": "Specify a non-default location to store blockchain and other data.",
-      "default": "$BASE"
+      "description": "The directory that lnd stores all wallet, chain, and channel related data within. Environment variables are expanded so they may be used. NOTE: Windows environment variables are typically %VARIABLE%, but they must be accessed with $VARIABLE here. Also, ~ is expanded to $LOCALAPPDATA on Windows.",
+      "default": "$BASE/data"
     },
-    "dbbatchsize": {
-      "name": "DB Batch Size",
-      "description": "Maximum database write batch size in bytes.",
-      "default": 16777216,
-      "min": 1024
+    "logdir": {
+      "name": "Log directory",
+      "description": "The directory that logs are stored in. The logs are auto-rotated by default. Rotated logs are compressed in place.",
+      "default": "$BASE/logs"
     },
-    "dbcache": {
-      "name": "DB Cache Size",
-      "description": "Set database cache size in megabytes; machines sync faster with a larger cache. Recommend setting as high as possible based upon machine's available RAM.",
-      "default": 450,
-      "min": 4
+    "maxlogfiles": {
+      "name": "Max log files",
+      "description": "Number of logfiles that the log rotation should keep. Setting it to 0 disables deletion of old log files.",
+      "default": 3
     },
-    "includeconf": {
-      "name": "Include Config File",
-      "description": "Load additional configuration file, relative to the data directory.",
+    "maxlogfilesize": {
+      "name": "Max log file size (in MB)",
+      "description": "Max log file size in MB before it is rotated.",
+      "default": 10
+    },
+    "acceptortimeout": {
+      "name": "Acceptor timeout (in seconds)",
+      "description": "Time after which an RPCAcceptor will time out and return false if it hasn't yet received a response.",
+      "default": "15s"
+    },
+
+    "tlscertpath": {
+      "name": "TLS Cert path",
+      "description": "Path to TLS certificate for lnd's RPC and REST services.",
+      "default": "$BASE/tls.cert"
+    },
+    "tlskeypath": {
+      "name": "TLS Key path",
+      "description": "Path to TLS private key for lnd's RPC and REST services.",
+      "default": "$BASE/tls.key"
+    },
+    "tlsextraip": {
+      "name": "TLS extra ip",
+      "description": "Adds an extra ip to the generated certificate. Setting multiple tlsextraip= entries is allowed. (old tls files must be deleted if changed)",
       "default": ""
     },
-    "loadblock": {
-      "name": "Import Blocks From File",
-      "description": "Imports blocks from external blk000??.dat file on startup. This option can be set multiple times with different file values.",
+    "tlsextradomain": {
+      "name": "TLS extra domain",
+      "description": "Adds an extra domain to the generate certificate. Setting multiple tlsextradomain= entries is allowed. (old tls files must be deleted if changed)",
       "default": ""
     },
-    "maxorphantx": {
-      "name": "Max Orphan Transactions",
-      "description": "Keep at most <n> unconnectable transactions in memory.",
-      "default": 100,
-      "min": 0
-    },
-    "maxmempool": {
-      "name": "Max Mempool Size",
-      "description": "Keep the transaction memory pool below <n> megabytes.",
-      "default": 300
-    },
-    "mempoolexpiry": {
-      "name": "Mempool Expiration",
-      "description": "Do not keep transactions in the mempool longer than <n> hours.",
-      "default": 336,
-      "min": 1
-    },
-    "minimumchainwork": {
-      "name": "Minimum Chain Work",
-      "description": "The (hex value) minimum amount of cumulative proof of work required.",
-      "default": "0x000000000000000000000000000000000000000000f91c579d57cad4bc5278cc"
-    },
-    "persistmempool": {
-      "name": "Persist Mempool",
-      "description": "Save the mempool on shutdown and load on restart.",
+    "tlsautorefresh": {
+      "name": "TLS Auto refresh",
+      "description": "If set, then all certs will automatically be refreshed if they're close to  expiring, or if any parameters related to extra IPs or domains in the cert change.",
       "default": 1
     },
-    "blockreconstructionextratxn": {
-      "name": "Block Reconstruction Transactions",
-      "description": "Extra transactions to keep in memory for compact block reconstructions.",
-      "default": 100
+
+    "tlscertduration": {
+      "name": "TLS cert duration",
+      "description": "The duration from generating the self signed certificate to the certificate expiry date. Valid time units are {s, m, h}. The below value is about 14 months (14 * 30 * 24 = 10080)",
+      "default": "10080h"
     },
-    "par": {
-      "name": "Script Verification Parallelization",
-      "description": "Set the number of script verification threads. (1 to CPU_CORES, 0 = automatic, less than 0 = leave that many cores free).",
-      "default": 0
+    "tlsdisableautofill": {
+      "name": "TLS disable autofill",
+      "description": "Do not include the interface IPs or the system hostname in TLS certificate, use first --tlsextradomain as Common Name instead, if set.",
+      "default": true
     },
-    "pid": {
-      "name": "PID file",
-      "description": "Specify process ID file name. Ignored for Windows.",
-      "default": "bitcoind.pid"
+    "externalhosts": {
+      "name": "External hosts",
+      "description": "A list of domains for lnd to periodically resolve, and advertise the resolved IPs for the backing node. This is useful for users that only have a dynamic IP, or want to expose the node at a domain.",
+      "default": "my-node-domain.com"
     },
-    "prune": {
-      "name": "Prune Old Blocks",
-      "description": "Reduce storage requirements by only storing most recent N MiB of block. This mode is incompatible with -txindex and -coinstatsindex. WARNING: Reverting this setting requires re-downloading the entire blockchain. (default: 0 = disable pruning blocks, 1 = allow manual pruning via RPC, greater than 550 = automatically prune blocks to stay under target size in MiB).",
-      "default": 0,
-      "min": 0
+    "letsencryptdir": {
+      "name": "Lets Encrypt directory",
+      "description": "Sets the directory to store Let's Encrypt certificates within",
+      "default": "$BASE/letsencrypt"
     },
-    "reindex-chainstate": {
-      "name": "Reindex Chainstate",
-      "description": "Reindex chain state from the currently indexed blocks. WARNING: very slow!",
-      "default": 0
+    "letsencryptlisten": {
+      "name": "Lets Encrypt listen",
+      "description": "The IP:port on which lnd will listen for Let's Encrypt challenges. Let's Encrypt will always try to contact on port 80. Often non-root processes are not allowed to bind to ports lower than 1024. This configuration option allows a different port to be used, but must be used in combination with port forwarding from port 80. This configuration can also be used to specify another IP address to listen on, for example an IPv6 address.",
+      "default": "localhost:8080"
     },
-    "reindex": {
-      "name": "Reindex",
-      "description": "Rebuild chain state and block index from the blk*.dat files on disk. WARNING: very slow!",
-      "default": 0
+    "letsencryptdomain": {
+      "name": "Lets Encrypt domain",
+      "description": "Request a Let's Encrypt certificate for this domain. Note that the certificate is only requested and stored when the first rpc connection comes in.",
+      "default": "example.com"
     },
-    "sandbox": {
-      "name": "Sandbox Mode",
+
+    "no-macaroons": {
+      "name": "No macaroons",
+      "description": "Disable macaroon authentication. Macaroons are used as bearer credentials to authenticate all RPC access. If one wishes to opt out of macaroons, uncomment the line below.",
+      "default": 1
+    },
+    "sync-freelist": {
+      "name": "Sync freelist",
+      "description": "Enable free list syncing for the default bbolt database. This will decrease start up time, but can result in performance degradation for very large databases, and also result in higher memory usage. If 'free list corruption' is detected, then this flag may resolve things.",
+      "default": true
+    },
+    "adminmacaroonpath": {
+      "name": "Admin macaroon path",
+      "description": "Path to write the admin macaroon for lnd's RPC and REST services if it doesn't exist. This can be set if one wishes to store the admin macaroon in a distinct location. By default, it is stored within lnd's network directory. Applications that are able to read this file, gain admin macaroon access.",
+      "default": "$BASE/data/chain/bitcoin/simnet/admin.macaroon"
+    },
+    "readonlymacaroonpath": {
+      "name": "Readonly macaroon path",
+      "description": "Path to write the read-only macaroon for lnd's RPC and REST services if it doesn't exist. This can be set if one wishes to store the read-only macaroon in a distinct location. The read only macaroon allows users which can read the file to access RPCs which don't modify the state of the daemon. By default, it is stored within lnd's network directory.",
+      "default": "$BASE/data/chain/bitcoin/simnet/readonly.macaroon"
+    },
+    "invoicemacaroonpath": {
+      "name": "Invoice macaroon path",
+      "description": "Path to write the invoice macaroon for lnd's RPC and REST services if it doesn't exist. This can be set if one wishes to store the invoice macaroon in a distinct location. By default, it is stored within lnd's network directory. The invoice macaroon allows users which can read the file to gain read and write access to all invoice related RPCs.",
+      "default": "$BASE/data/chain/bitcoin/simnet/invoice.macaroon"
+    },
+
+    "coin-selection-strategy": {
+      "name": "Coin selection strategy",
       "description": {
-        "0": "Do not use the experimental syscall sandbox.",
-        "abort": "Allow only expected syscalls to be used by bitcoind. The invocation of an unexpected syscall results in the entire process being killed immediately by the kernel without executing the unexpected syscall. Note that this is an experimental new feature that may cause bitcoind to exit or crash unexpectedly: use with caution.",
-        "log-and-abort": "Allow only expected syscalls to be used by bitcoind. The invocation of an unexpected syscall results in a debug handler being invoked which will log the incident and terminate the program (without executing the unexpected syscall.) Note that this is an experimental new feature that may cause bitcoind to exit or crash unexpectedly: use with caution."
+        "largest": "Select largest UTXOs",
+        "random": "Select UTXOs randomly"
       },
-      "default": "0",
+      "default": "largest",
       "values": [
-        "Disabled [0]",
-        "Abort [abort]",
-        "Log and Abort [log-and-abort]"
+        "Largest [largest]",
+        "Random [random]"
       ]
     },
-    "settings": {
-      "name": "Settings Data File",
-      "description": "Specify path to dynamic settings data file. Can be disabled with -nosettings. File is written at runtime and not meant to be edited by users. Relative paths will be prefixed by datadir location.",
-      "default": "settings.json"
+
+    "payments-expiration-grace-period": {
+      "name": "Payments expiration grace period",
+      "description": "A period to wait before for closing channels with outgoing htlcs that have  timed out and are a result of this nodes instead payment. In addition to our  current block based deadline, if specified this grace period will also be taken into account. Valid time units are {s, m, h}.",
+      "default": "30s"
     },
-    "startupnotify": {
-      "name": "Startup Notification",
-      "description": "Execute command on startup.",
+    "listen": {
+      "name": "Listen",
+      "description": "Specify the interfaces to listen on for p2p connections. One listen address per line. All ipv4 on port 9735: listen=0.0.0.0:9735. On all ipv4 interfaces on port 9735 and ipv6 localhost port 9736: listen=0.0.0.0:9735, listen=[::1]:9736",
+      "default": "0.0.0.0:9735"
+    },
+    "nolisten": {
+      "name": "No listen",
+      "description": "Disable listening for incoming p2p connections. This will override all listeners.",
+      "default": true
+    },
+    "rpclisten": {
+      "name": "RPC listen",
+      "description": "Specify the interfaces to listen on for gRPC connections. One listen address per line. Only ipv4 localhost on port 10009: rpclisten=localhost:10009. On ipv4 localhost port 10009 and ipv6 port 10010: rpclisten=localhost:10009 rpclisten=[::1]:10010. On an Unix socket: rpclisten=unix:///var/run/lnd/lnd-rpclistener.sock",
+      "default": "localhost:10009"
+    },
+    "restlisten": {
+      "name": "REST listen",
+      "description": "Specify the interfaces to listen on for REST connections. One listen address per line. All ipv4 interfaces on port 8080: restlisten=0.0.0.0:8080. On ipv4 localhost port 80 and 443: restlisten=localhost:80, restlisten=localhost:443. On an Unix socket: restlisten=unix:///var/run/lnd-restlistener.sock",
+      "default": "0.0.0.0:8080"
+    },
+    "restcors": {
+      "name": "REST CORS",
+      "description": "A series of domains to allow cross origin access from. This controls the CORs policy of the REST RPC proxy.",
+      "default": "https://my-special-site.com"
+    },
+    "externalip": {
+      "name": "External IP",
+      "description": "Adding an external IP will advertise your node to the network. This signals that your node is available to accept incoming channels. If you don't wish to advertise your node, this value doesn't need to be set. Unless specified (with host:port notation), the default port (9735) will be added to the address.",
       "default": ""
     },
-    "sysperms": {
-      "name": "System File Permissions",
-      "description": "Create new files with system default permissions. Only effective if wallet is disabled.",
-      "default": 0
+    "nat": {
+      "name": "NAT",
+      "description": "Instead of explicitly stating your external IP address, you can also enable UPnP or NAT-PMP support on the daemon. Both techniques will be tried and require proper hardware support. In order to detect this hardware support, `lnd` uses a dependency that retrieves the router's gateway address by using different built-in binaries in each platform. Therefore, it is possible that we are unable to detect the hardware and `lnd` will exit with an error indicating this. This option will automatically retrieve your external IP address, even after it has changed in the case of dynamic IPs, and advertise it to the network using the ports the daemon is listening on. This does not support devices behind multiple NATs.",
+      "default": true
     },
-    "txindex": {
-      "name": "Index Transactions",
-      "description": "Maintain a full transaction index, used by the getrawtransaction rpc call.",
-      "default": 0
+    "norest": {
+      "name": "No REST",
+      "description": "norest",
+      "default": true
+    },
+    "no-rest-tls": {
+      "name": "no-rest-tls",
+      "description": "Disable TLS for the REST API.",
+      "default": true
+    },
+
+    "addpeer": {
+      "name": "Add peers",
+      "description": "Specify peer(s) to connect to first.",
+      "default": ""
+    },
+    "ws-ping-interval": {
+      "name": "WS ping interval",
+      "description": "The ping interval for REST based WebSocket connections, set to 0 to disable sending ping messages from the server side. Valid time units are {s, m, h}.",
+      "default": "30s"
+    },
+    "ws-pong-wait": {
+      "name": "WS pong wait",
+      "description": "The time we wait for a pong response message on REST based WebSocket connections before the connection is closed as inactive. Valid time units are {s, m, h}.",
+      "default": "5s"
+    },
+    "minbackoff": {
+      "name": "Min back off",
+      "description": "Shortest backoff when reconnecting to persistent peers. Valid time units are {s, m, h}.",
+      "default": "1s"
+    },
+    "maxbackoff": {
+      "name": "Max back off",
+      "description": "Longest backoff when reconnecting to persistent peers. Valid time units are {s, m, h}.",
+      "default": "1h"
+    },
+    "connectiontimeout": {
+      "name": "Connection timeout",
+      "description": "The timeout value for network connections in seconds, default to 120 seconds. Valid uints are {ms, s, m, h}.",
+      "default": "120s"
+    },
+
+    "debuglevel": {
+      "name": "Debug level",
+      "description": "Debug logging level. Valid levels are {trace, debug, info, warn, error, critical} You may also specify <global-level>,<subsystem>=<level>,<subsystem2>=<level>,...  to set log level for individual subsystems. Use lncli debuglevel --show to  list available subsystems.",
+      "default": "debug,PEER=info"
+    },
+    "cpuprofile": {
+      "name": "CPU profile",
+      "description": "Write CPU profile to the specified file.",
+      "default": ""
+    },
+    "profile": {
+      "name": "Profile",
+      "description": "Enable HTTP profiling on given port -- NOTE port must be between 1024 and 65536. The profile can be access at: http://localhost:<PORT>/debug/pprof/.",
+      "default": ""
+    },
+
+    "unsafe-disconnect": {
+      "name": "Unsafe disconnect",
+      "description": "DEPRECATED: Allows the rpcserver to intentionally disconnect from peers with open channels. THIS FLAG WILL BE REMOVED IN 0.10.0.",
+      "default": false
+    },
+    "unsafe-replay": {
+      "name": "Unsafe replay",
+      "description": "Causes a link to replay the adds on its commitment txn after starting up, this enables testing of the sphinx replay logic.",
+      "default": true
+    },
+    "maxpendingchannels": {
+      "name": "Max pending channels",
+      "description": "The maximum number of incoming pending channels permitted per peer.",
+      "default": 1
+    },
+
+    "backupfilepath": {
+      "name": "Backup file path",
+      "description": "The target location of the channel backup file.",
+      "default": "$BASE/data/chain/bitcoin/simnet/channel.backup"
+    },
+    "blockcachesize": {
+      "name": "Block cache size (in MB)",
+      "description": "The maximum capacity of the block cache in bytes. Increasing this will result in more blocks being kept in memory but will increase performance when the same block is required multiple times. The example value below is 40 MB (1024 * 1024 * 40)",
+      "default": 41943040
+    },
+    "feeurl": {
+      "name": "Fee URL",
+      "description": "Optional URL for external fee estimation. If no URL is specified, the method for fee estimation will depend on the chosen backend and network. Must be set for neutrino on mainnet.",
+      "default": "https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json"
+    },
+    "nobootstrap": {
+      "name": "No bootstrap",
+      "description": "If true, then automatic network bootstrapping will not be attempted. This means that your node won't attempt to automatically seek out peers on the network.",
+      "default": true
+    },
+    "noseedbackup": {
+      "name": "No seedbackup",
+      "description": "If true, NO SEED WILL BE EXPOSED -- EVER, AND THE WALLET WILL BE ENCRYPTED USING THE DEFAULT PASSPHRASE. THIS FLAG IS ONLY FOR TESTING AND SHOULD NEVER BE USED ON MAINNET.",
+      "default": true
+    },
+    "wallet-unlock-password-file": {
+      "name": "Wallet unlock password file",
+      "description": "The full path to a file (or pipe/device) that contains the password for unlocking the wallet; if set, no unlocking through RPC is possible and lnd will exit if no wallet exists or the password is incorrect; if wallet-unlock-allow-create is also set then lnd will ignore this flag if no wallet exists and allow a wallet to be created through RPC.",
+      "default": "/tmp/example.password"
+    },
+    "wallet-unlock-allow-create": {
+      "name": "Wallet unlock allow create",
+      "description": "Don't fail with an error if wallet-unlock-password-file is set but no wallet exists yet. Not recommended for auto-provisioned or high-security systems because the wallet creation RPC is unauthenticated and an attacker could inject a seed while lnd is in that state.",
+      "default": true
+    },
+    "reset-wallet-transactions": {
+      "name": "Reset wallet transactions",
+      "description": "Removes all transaction history from the on-chain wallet on startup, forcing a full chain rescan starting at the wallet's birthday. Implements the same functionality as btcwallet's dropwtxmgr command. Should be set to false after successful execution to avoid rescanning on every restart of lnd.",
+      "default": true
+    },
+
+    "minchansize": {
+      "name": "Min chan size",
+      "description": "The smallest channel size (in satoshis) that we should accept. Incoming channels smaller than this will be rejected, default value 20000.",
+      "default": 20000
+    },
+    "maxchansize": {
+      "name": "Max chan size",
+      "description": "The largest channel size (in satoshis) that we should accept. Incoming channels larger than this will be rejected. For non-Wumbo channels this  limit remains 16777215 satoshis by default as specified in BOLT-0002. For wumbo channels this limit is 1,000,000,000 satoshis (10 BTC). Set this config option explicitly to restrict your maximum channel size to better align with your risk tolerance",
+      "default": 16777215
+    },
+    "coop-close-target-confs": {
+      "name": "Coop close target confs",
+      "description": "The target number of blocks in which a cooperative close initiated by a remote peer should be confirmed. This target is used to estimate the starting fee rate that will be used during fee negotiation with the peer. This target is is also used for cooperative closes initiated locally if the --conf_target for the channel closure is not set.",
+      "default": 10
+    },
+    "channel-commit-interval": {
+      "name": "Channel commit interval",
+      "description": "The maximum time that is allowed to pass between receiving a channel state update and signing the next commitment. Setting this to a longer duration allows for more efficient channel operations at the cost of latency. This is capped at 1 hour. The default is 50 milliseconds.",
+      "default": "1h"
+    },
+    "pending-commit-interval": {
+      "name": "Pending commit interval",
+      "description": "The maximum time that is allowed to pass while waiting for the remote party to revoke a locally initiated commitment state. Setting this to a longer duration if a slow response is expected from the remote party or large number of payments are attempted at the same time. (default: 1m0s)",
+      "default": "5m"
+    },
+    "channel-commit-batch-size": {
+      "name": "Channel commit batch size",
+      "description": "The maximum number of channel state updates that is accumulated before signing a new commitment.",
+      "default": 10
+    },
+    "keep-failed-payment-attempts": {
+      "name": "Keep failed payment attempts",
+      "description": "Keeps persistent record of all failed payment attempts for successfully settled payments.",
+      "default": false
+    },
+    "default-remote-max-htlcs": {
+      "name": "Default remote max htlcs",
+      "description": "The default max_htlc applied when opening or accepting channels. This value limits the number of concurrent HTLCs that the remote party can add to the commitment. The maximum possible value is 483.",
+      "default": 483
+    },
+    "chan-enable-timeout": {
+      "name": "Chan enable timeout",
+      "description": "The duration that a peer connection must be stable before attempting to send a channel update to re-enable or cancel a pending disables of the peer's channels on the network. (default: 19m0s)",
+      "default": "22m"
+    },
+    "chan-disable-timeout": {
+      "name": "Chan disable timeout",
+      "description": "The duration that must elapse after first detecting that an already active  channel is actually inactive and sending channel update disabling it to the  network. The pending disable can be canceled if the peer reconnects and becomes stable for chan-enable-timeout before the disable update is sent. (default: 20m0s)",
+      "default": "22m"
+    },
+    "chan-status-sample-interval": {
+      "name": "Chan status sample interval",
+      "description": "The polling interval between attempts to detect if an active channel has become inactive due to its peer going offline. (default: 1m0s)",
+      "default": "2m"
+    },
+
+    "height-hint-cache-query-disable": {
+      "name": "Height hint cache query disable",
+      "description": "Disable queries from the height-hint cache to try to recover channels stuck in the pending close state. Disabling height hint queries may cause longer chain rescans, resulting in a performance hit. Unset this after channels are unstuck so you can get better performance again.",
+      "default": true
+    },
+    "historicalsyncinterval": {
+      "name": "Historical sync interval",
+      "description": "The polling interval between historical graph sync attempts. Each historical graph sync attempt ensures we reconcile with the remote peer's graph from the genesis block. (default: 1h0m0s)",
+      "default": "2h"
+    },
+    "ignore-historical-gossip-filters": {
+      "name": "Ignore historical gossip filters",
+      "description": "If true, will not reply with historical data that matches the range specified by a remote peer's gossip_timestamp_filter. Doing so will result in lower memory and bandwidth requirements.",
+      "default": true
+    },
+    "rejectpush": {
+      "name": "Reject push",
+      "description": "If true, lnd will not accept channel opening requests with non-zero push amounts. This should prevent accidental pushes to merchant nodes.",
+      "default": true
+    },
+    "rejecthtlc": {
+      "name": "Reject HTLC",
+      "description": "If true, lnd will not forward any HTLCs that are meant as onward payments. This option will still allow lnd to send HTLCs and receive HTLCs but lnd won't be used as a hop.",
+      "default": true
+    },
+    "requireinterceptor": {
+      "name": "Require Interceptor",
+      "description": "If true, all HTLCs will be held until they are handled by an interceptor",
+      "default": true
+    },
+    "stagger-initial-reconnect": {
+      "name": "Stagger initial reconnect",
+      "description": "If true, will apply a randomized staggering between 0s and 30s when reconnecting to persistent peers on startup. The first 10 reconnections will be attempted instantly, regardless of the flag's value",
+      "default": true
+    },
+
+    "max-cltv-expiry": {
+      "name": "Max cltv expiry",
+      "description": "The maximum number of blocks funds could be locked up for when forwarding payments. (default: 2016)",
+      "default": true
+    },
+    "max-channel-fee-allocation": {
+      "name": "Max channel fee allocation",
+      "description": "The maximum percentage of total funds that can be allocated to a channel's commitment fee. This only applies for the initiator of the channel. Valid values are within [0.1, 1]. (default: 0.5)",
+      "default": 0.9
+    },
+    "max-commit-fee-rate-anchors": {
+      "name": "Max commit fee rate anchors",
+      "description": "The maximum fee rate in sat/vbyte that will be used for commitments of channels of the anchors type. Must be large enough to ensure transaction propagation (default: 10)",
+      "default": 5
+    },
+    "dust-threshold": {
+      "name": "Dust threshold",
+      "description": "A threshold defining the maximum amount of dust a given channel can have after which forwarding and sending dust HTLC's to and from the channel will fail. This amount is expressed in satoshis. (default: 500000)",
+      "default": 1000000
+    },
+
+    "dry-run-migration": {
+      "name": "Dry run migration",
+      "description": "If true, lnd will abort committing a migration if it would otherwise have been successful. This leaves the database unmodified, and still compatible with the previously active version of lnd.",
+      "default": true
+    },
+    "enable-upfront-shutdown": {
+      "name": "Enable upfront shutdown",
+      "description": "If true, option upfront shutdown script will be enabled. If peers that we open channels with support this feature, we will automatically set the script to which cooperative closes should be paid out to on channel open. This offers the partial protection of a channel peer disconnecting from us if cooperative close is attempted with a different script.",
+      "default": true
+    },
+    "accept-keysend": {
+      "name": "Accept keysend",
+      "description": "If true, spontaneous payments through keysend will be accepted. This is a temporary solution until AMP is implemented which is expected to be soon. This option will then become deprecated in favor of AMP.",
+      "default": true
+    },
+    "keysend-hold-time": {
+      "name": "Keysend hold time",
+      "description": "If non-zero, keysend payments are accepted but not immediately settled. If the payment isn't settled manually after the specified time, it is canceled automatically. [experimental]",
+      "default": true
+    },
+    "accept-amp": {
+      "name": "Accept AMP",
+      "description": "If true, spontaneous payments through AMP will be accepted. Payments to AMP invoices will be accepted regardless of this setting.",
+      "default": true
+    },
+    "gc-canceled-invoices-on-startup": {
+      "name": "GC canceled invoices on startup",
+      "description": "If true, we'll attempt to garbage collect canceled invoices upon start.",
+      "default": true
+    },
+    "gc-canceled-invoices-on-the-fly": {
+      "name": "GC canceled invoices on the fly",
+      "description": "If true, we'll delete newly canceled invoices on the fly.",
+      "default": true
+    },
+    "allow-circular-route": {
+      "name": "Allow circular route",
+      "description": "If true, our node will allow htlc forwards that arrive and depart on the same channel.",
+      "default": true
+    },
+    "trickledelay": {
+      "name": "Trickle delay",
+      "description": "Time in milliseconds between each release of announcements to the network",
+      "default": 180000
+    },
+    "numgraphsyncpeers": {
+      "name": "Num graph sync peers",
+      "description": "The number of peers that we should receive new graph updates from. This option can be tuned to save bandwidth for light clients or routing nodes. (default: 3)",
+      "default": 9
+    },
+    "prometheus.enable": {
+      "name": "prometheus enable",
+      "description": "If true, lnd will start the Prometheus exporter. Prometheus flags are  behind a build/compile flag and are not available by default. lnd must be built  with the monitoring tag; `make && make install tags=monitoring` to activate them.",
+      "default": true
+    },
+    "prometheus.listen": {
+      "name": "Prometheus listen",
+      "description": "Specify the interface to listen on for Prometheus connections.",
+      "default": "0.0.0.0:8989"
+    },
+    "prometheus.perfhistograms": {
+      "name": "Prometheus perfhistograms",
+      "description": "If true, then we'll export additional information that allows users to plot the processing latency, and total time spent across each RPC calls+service. This generates additional memory load for the Prometheus server, and will end up using more disk space over time.",
+      "default": true
+    },
+    "alias": {
+      "name": "Alias",
+      "description": "The alias your node will use, which can be up to 32 UTF-8 characters in length.",
+      "default": "My Lightning ☇"
+    },
+    "color": {
+      "name": "Color",
+      "description": "The color of the node in hex format, used to customize node appearance in intelligence services.",
+      "default": "#3399FF"
     }
   },
+
   "debug": {
     "section": "Debugging & Testing",
     "description": "Features that help developers who are testing changes to Bitcoin Core.",
@@ -1051,58 +1299,13 @@
       "default": 1
     }
   },
-  "zeromq": {
-    "section": "ZeroMQ",
-    "description": "Options for handling notifications emitted via ZeroMQ.",
-    "zmqpubhashblock": {
-      "name": "Publish Block Hashes",
-      "description": "Enable publishing of block hashes to <address>.",
+  "sweeper": {
+    "section": "Sweeper",
+    "description": "",
+    "batchwindowduration": {
+      "name": "Batch window duration (in seconds)",
+      "description": "Duration of the sweep batch window. The sweep is held back during the batch window to allow more inputs to be added and thereby lower the fee per input.",
       "default": ""
-    },
-    "zmqpubhashtx": {
-      "name": "Publish Transaction Hashes",
-      "description": "Enable publishing of transaction hashes to <address>.",
-      "default": ""
-    },
-    "zmqpubrawblock": {
-      "name": "Publish Raw Blocks",
-      "description": "Enable publishing of raw block hex to <address>.",
-      "default": ""
-    },
-    "zmqpubrawtx": {
-      "name": "Publish Raw Transactions",
-      "description": "Enable publishing of raw transaction hex to <address>.",
-      "default": ""
-    },
-    "zmqpubhashblockhwm": {
-      "name": "Publish Block Hashes High Water Mark",
-      "description": "Set publish hash block outbound message high water mark.",
-      "default": 1000
-    },
-    "zmqpubhashtxhwm": {
-      "name": "Publish Transaction Hashes High Water Mark",
-      "description": "Set publish hash transaction outbound message high water mark.",
-      "default": 1000
-    },
-    "zmqpubrawblockhwm": {
-      "name": "Publish Raw Blocks High Water Mark",
-      "description": "Set publish raw block outbound message high water mark.",
-      "default": 1000
-    },
-    "zmqpubrawtxhwm": {
-      "name": "Publish Raw Transactions High Water Mark",
-      "description": "Set publish raw transaction outbound message high water mark.",
-      "default": 1000
-    },
-    "zmqpubsequence": {
-      "name": "Publish Hash Block and Transaction Sequence",
-      "description": "Enable publish hash block and tx sequence in <address>.",
-      "default": ""
-    },
-    "zmqpubsequencehwm": {
-      "name": "Publish Hash Sequence Message High Water Mark",
-      "description": "Set publish hash sequence message high water mark.",
-      "default": 1000
     }
   }
 }

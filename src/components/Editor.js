@@ -24,204 +24,124 @@ class Editor extends Component {
   render () {
     const {settings} = this.props;
     const platform = settings.__internal.platform;
-    const base = settings.core.datadir !== '$BASE' ? settings.core.datadir : basePath(platform);
+    const base = settings.application.datadir !== '$BASE/data' ? settings.application.datadir : basePath(platform);
+      debugger;
 
+    /*
     // handle config dependencies here
     if (settings.network.peerblockfilters === 1 && settings.core.blockfilterindex !== "1") {
       settings.core.blockfilterindex = "1";
     }
+    */
 
     return (
       <div>
         { this.select('__internal', 'platform') }
 
-        <Section title={data.core.section} description={data.core.description}>
-          { this.text('core', 'alertnotify') }
-          { this.select('core', 'blockfilterindex') }
-          { this.text('core', 'blocknotify') }
-          { this.path('core', 'blocksdir', base, platform) }
-          { this.flag('core', 'blocksonly') }
-          { this.text('core', 'assumevalid') }
-          { this.flag('core', 'coinstatsindex') }
-          { this.flag('core', 'daemon') }
-          { this.flag('core', 'daemonwait') }
-          { this.path('core', 'datadir', base, platform) }
-          { this.number('core', 'dbbatchsize') }
-          { this.number('core', 'dbcache') }
-          { this.text('core', 'includeconf') }
-          { this.text('core', 'loadblock') }
-          { this.number('core', 'maxorphantx') }
-          { this.number('core', 'maxmempool') }
-          { this.number('core', 'mempoolexpiry') }
-          { this.flag('core', 'persistmempool') }
-          { this.text('core', 'minimumchainwork') }
-          { this.number('core', 'blockreconstructionextratxn') }
-          { this.number('core', 'par') }
-          { this.text('core', 'pid') }
-          { this.number('core', 'prune') }
-          { this.flag('core', 'reindex-chainstate') }
-          { this.flag('core', 'reindex') }
-          { this.select('core', 'sandbox') }
-          { this.text('core', 'settings') }
-          { this.text('core', 'startupnotify') }
-          { this.flag('core', 'sysperms') }
-          { this.flag('core', 'txindex') }
+        <Section title={data.application.section} description={data.application.description}>
+          { this.path('application', 'datadir', base, platform) }
+          { this.path('application', 'logdir', base, platform) }
+          { this.number('application', 'maxlogfiles') }
+          { this.number('application', 'maxlogfilesize') }
+          { this.text('application', 'acceptortimeout') }
+
+          { this.path('application', 'tlscertpath', base, platform) }
+          { this.path('application', 'tlskeypath', base, platform) }
+          { this.text('application', 'tlsextraip') }
+          { this.text('application', 'tlsextradomain') }
+          { this.flag('application', 'tlsautorefresh') }
+
+          { this.text('application', 'tlscertduration') }
+          { this.flag('application', 'tlsdisableautofill') }
+          { this.text('application', 'externalhosts') }
+          { this.path('application', 'letsencryptdir', base, platform) }
+          { this.text('application', 'letsencryptlisten') }
+          { this.text('application', 'letsencryptdomain') }
+
+          { this.flag('application', 'no-macaroons') }
+          { this.flag('application', 'sync-freelist') }
+          { this.path('application', 'adminmacaroonpath', base, platform) }
+          { this.path('application', 'readonlymacaroonpath', base, platform) }
+          { this.path('application', 'invoicemacaroonpath', base, platform) }
+
+          { this.select('application', 'coin-selection-strategy') }
+          { this.text('application', 'payments-expiration-grace-period') }
+          { this.text('application', 'listen') }
+          { this.flag('application', 'nolisten') }
+          { this.text('application', 'rpclisten') }
+          { this.text('application', 'restlisten') }
+          { this.text('application', 'restcors') }
+          { this.text('application', 'externalip') }
+          { this.flag('application', 'nat') }
+          { this.flag('application', 'norest') }
+          { this.flag('application', 'no-rest-tls') }
+
+          { this.text('application', 'addpeer') }
+          { this.text('application', 'ws-ping-interval') }
+          { this.text('application', 'ws-pong-wait') }
+          { this.text('application', 'minbackoff') }
+          { this.text('application', 'maxbackoff') }
+          { this.text('application', 'connectiontimeout') }
+
+          { this.text('application', 'debuglevel') }
+          { this.text('application', 'cpuprofile') }
+          { this.text('application', 'profile') }
+
+          { this.flag('application', 'unsafe-disconnect') }
+          { this.flag('application', 'unsafe-replay') }
+          { this.number('application', 'maxpendingchannels') }
+
+          { this.path('application', 'backupfilepath', base, platform) }
+          { this.number('application', 'blockcachesize') }
+          { this.text('application', 'feeurl') }
+          { this.flag('application', 'nobootstrap') }
+          { this.flag('application', 'noseedbackup') }
+          { this.text('application', 'wallet-unlock-password-file') }
+          { this.flag('application', 'wallet-unlock-allow-create') }
+          { this.flag('application', 'reset-wallet-transactions') }
+
+          { this.number('application', 'minchansize') }
+          { this.number('application', 'maxchansize') }
+          { this.number('application', 'coop-close-target-confs') }
+          { this.text('application', 'channel-commit-interval') }
+          { this.text('application', 'pending-commit-interval') }
+          { this.number('application', 'channel-commit-batch-size') }
+          { this.flag('application', 'keep-failed-payment-attempts') }
+          { this.number('application', 'default-remote-max-htlcs') }
+          { this.text('application', 'chan-enable-timeout') }
+          { this.text('application', 'chan-disable-timeout') }
+          { this.text('application', 'chan-status-sample-interval') }
+
+          { this.flag('application', 'height-hint-cache-query-disable') }
+          { this.text('application', 'historicalsyncinterval') }
+          { this.flag('application', 'ignore-historical-gossip-filters') }
+          { this.flag('application', 'rejectpush') }
+          { this.flag('application', 'rejecthtlc') }
+          { this.flag('application', 'requireinterceptor') }
+          { this.flag('application', 'stagger-initial-reconnect') }
+
+          { this.flag('application', 'max-cltv-expiry') }
+          { this.number('application', 'max-channel-fee-allocation') }
+          { this.number('application', 'max-commit-fee-rate-anchors') }
+          { this.number('application', 'dust-threshold') }
+
+          { this.flag('application', 'dry-run-migration') }
+          { this.flag('application', 'enable-upfront-shutdown') }
+          { this.flag('application', 'accept-keysend') }
+          { this.flag('application', 'keysend-hold-time') }
+          { this.flag('application', 'accept-amp') }
+          { this.flag('application', 'gc-canceled-invoices-on-startup') }
+          { this.flag('application', 'gc-canceled-invoices-on-the-fly') }
+          { this.flag('application', 'allow-circular-route') }
+          { this.number('application', 'trickledelay') }
+          { this.number('application', 'numgraphsyncpeers') }
+          { this.flag('application', 'prometheus.enable') }
+          { this.text('application', 'prometheus.listen') }
+          { this.flag('application', 'prometheus.perfhistograms') }
+          { this.text('application', 'alias') }
+          { this.text('application', 'color') }
         </Section>
-        <Section title={data.debug.section} description={data.debug.description}>
-          { this.text('debug', 'uacomment') }
-          { this.flag('debug', 'addrmantest') }
-          { this.flag('debug', 'capturemessages') }
-          { this.number('debug', 'checkblocks') }
-          { this.number('debug', 'checklevel') }
-          { this.number('debug', 'checkaddrman') }
-          { this.number('debug', 'checkmempool') }
-          { this.flag('debug', 'checkpoints') }
-          { this.decimal('debug', 'dbcrashratio') }
-          { this.flag('debug', 'fastprune') }
-          { this.flag('debug', 'stopafterblockimport') }
-          { this.number('debug', 'stopatheight') }
-          { this.text('debug', 'testactivationheight') }
-          { this.number('debug', 'limitancestorcount') }
-          { this.number('debug', 'limitancestorsize') }
-          { this.number('debug', 'limitdescendantcount') }
-          { this.number('debug', 'limitdescendantsize') }
-          { this.select('debug', 'debug') }
-          { this.select('debug', 'debugexclude') }
-          { this.path('debug', 'debuglogfile', base, platform) }
-          { this.flag('debug', 'logips') }
-          { this.flag('debug', 'logsourcelocations') }
-          { this.flag('debug', 'logthreadnames') }
-          { this.flag('debug', 'logtimestamps') }
-          { this.flag('debug', 'logtimemicros') }
-          { this.number('debug', 'mocktime') }
-          { this.number('debug', 'maxsigcachesize') }
-          { this.number('debug', 'maxtipage') }
-          { this.decimal('debug', 'maxtxfee') }
-          { this.flag('debug', 'printtoconsole') }
-          { this.flag('debug', 'printpriority') }
-          { this.text('debug', 'promiscuousmempoolflags') }
-          { this.flag('debug', 'shrinkdebugfile') }
-        </Section>
-        <Section title={data.chain.section} description={data.chain.description}>
-          { this.select('chain', 'chain') }
-          { this.flag('chain', 'regtest') }
-          { this.flag('chain', 'signet') }
-          { this.text('chain', 'signetchallenge') }
-          { this.text('chain', 'signetseednode') }
-          { this.flag('chain', 'testnet') }
-          { this.text('chain', 'vbparams') }
-        </Section>
-        <Section title={data.mining.section} description={data.mining.description}>
-          { this.number('mining', 'blockmaxweight') }
-          { this.decimal('mining', 'blockmintxfee') }
-          { this.text('mining', 'blockversion') }
-        </Section>
-        <Section title={data.network.section} description={data.network.description}>
-          { this.text('network', 'addnode') }
-          { this.path('network', 'asmap', base, platform) }
-          { this.number('network', 'bantime') }
-          { this.text('network', 'bind') }
-          { this.flag('network', 'cjdnsreachable') }
-          { this.text('network', 'connect') }
-          { this.flag('network', 'discover') }
-          { this.flag('network', 'dns') }
-          { this.flag('network', 'dnsseed') }
-          { this.text('network', 'externalip') }
-          { this.flag('network', 'fixedseeds') }
-          { this.flag('network', 'forcednsseed') }
-          { this.flag('network', 'i2pacceptincoming') }
-          { this.text('network', 'i2psam') }
-          { this.flag('network', 'listen') }
-          { this.flag('network', 'listenonion') }
-          { this.number('network', 'maxconnections') }
-          { this.number('network', 'maxreceivebuffer') }
-          { this.number('network', 'maxsendbuffer') }
-          { this.number('network', 'maxtimeadjustment') }
-          { this.flag('network', 'natpmp') }
-          { this.flag('network', 'networkactive') }
-          { this.text('network', 'onion') }
-          { this.select('network', 'onlynet') }
-          { this.flag('network', 'peerblockfilters') }
-          { this.flag('network', 'peerbloomfilters') }
-          { this.number('network', 'peertimeout') }
-          { this.number('network', 'port') }
-          { this.text('network', 'proxy') }
-          { this.flag('network', 'proxyrandomize') }
-          { this.text('network', 'seednode') }
-          { this.number('network', 'timeout') }
-          { this.text('network', 'torcontrol') }
-          { this.text('network', 'torpassword') }
-          { this.flag('network', 'upnp') }
-          { this.text('network', 'whitebind') }
-          { this.text('network', 'whitelist') }
-          { this.number('network', 'maxuploadtarget') }
-        </Section>
-        <Section title={data.relay.section} description={data.relay.description}>
-          { this.flag('relay', 'acceptnonstdtxn') }
-          { this.decimal('relay', 'incrementalrelayfee') }
-          { this.decimal('relay', 'dustrelayfee') }
-          { this.number('relay', 'bytespersigop') }
-          { this.flag('relay', 'datacarrier') }
-          { this.number('relay', 'datacarriersize') }
-          { this.flag('relay', 'permitbaremultisig') }
-          { this.decimal('relay', 'minrelaytxfee') }
-          { this.flag('relay', 'whitelistrelay') }
-        </Section>
-        <Section title={data.rpc.section} description={data.rpc.description}>
-          { this.multiselect('rpc', 'deprecatedrpc') }
-          { this.flag('rpc', 'server') }
-          { this.flag('rpc', 'rest') }
-          { this.text('rpc', 'rpcbind') }
-          { this.path('rpc', 'rpccookiefile', base, platform) }
-          { this.text('rpc', 'rpcauth') }
-          { this.number('rpc', 'rpcport') }
-          { this.text('rpc', 'rpcallowip') }
-          { this.flag('rpc', 'rpcwhitelistdefault') }
-          { this.text('rpc', 'rpcwhitelist') }
-          { this.number('rpc', 'rpcthreads') }
-          { this.number('rpc', 'rpcworkqueue') }
-          { this.select('rpc', 'rpcserialversion') }
-          { this.number('rpc', 'rpcservertimeout') }
-        </Section>
-        <Section title={data.wallet.section} description={data.wallet.description}>
-          { this.select('wallet', 'addresstype') }
-          { this.flag('wallet', 'avoidpartialspends') }
-          { this.select('wallet', 'changetype') }
-          { this.decimal('wallet', 'consolidatefeerate') }
-          { this.flag('wallet', 'disablewallet') }
-          { this.number('wallet', 'keypool') }
-          { this.decimal('wallet', 'fallbackfee') }
-          { this.decimal('wallet', 'discardfee') }
-          { this.decimal('wallet', 'maxapsfee') }
-          { this.decimal('wallet', 'mintxfee') }
-          { this.decimal('wallet', 'paytxfee') }
-          { this.text('wallet', 'signer') }
-          { this.flag('wallet', 'spendzeroconfchange') }
-          { this.text('wallet', 'rootcertificates') }
-          { this.number('wallet', 'txconfirmtarget') }
-          { this.flag('wallet', 'unsafesqlitesync') }
-          { this.flag('wallet', 'walletrbf') }
-          { this.text('wallet', 'wallet') }
-          { this.path('wallet', 'walletdir', base, platform) }
-          { this.flag('wallet', 'walletbroadcast') }
-          { this.text('wallet', 'walletnotify') }
-          { this.number('wallet', 'dblogsize') }
-          { this.flag('wallet', 'flushwallet') }
-          { this.flag('wallet', 'privdb') }
-          { this.flag('wallet', 'walletrejectlongchains') }
-        </Section>
-        <Section title={data.zeromq.section} description={data.zeromq.description}>
-          { this.text('zeromq', 'zmqpubhashblock') }
-          { this.text('zeromq', 'zmqpubhashtx') }
-          { this.text('zeromq', 'zmqpubrawblock') }
-          { this.text('zeromq', 'zmqpubrawtx') }
-          { this.text('zeromq', 'zmqpubsequence') }
-          { this.number('zeromq', 'zmqpubhashblockhwm') }
-          { this.number('zeromq', 'zmqpubhashtxhwm') }
-          { this.number('zeromq', 'zmqpubrawblockhwm') }
-          { this.number('zeromq', 'zmqpubrawtxhwm') }
-          { this.number('zeromq', 'zmqpubsequencehwm') }
-        </Section>
+
       </div>
     );
   }
@@ -369,6 +289,10 @@ class Editor extends Component {
 
   path (section, prop, base, platform, isEnabled = true) {
     return this.text(section, prop, isEnabled, value => {
+        if (prop === 'datadir') {
+            console.log(' --- ', value, base, platform);
+            debugger;
+        }
       if (!value) {
         return value;
       }

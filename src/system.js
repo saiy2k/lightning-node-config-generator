@@ -34,10 +34,8 @@ export function localPath (platform) {
 export function basePath (platform) {
   if (platform === 'Windows') {
     return joinPath([
-      '%UserProfile%',
-      'AppData',
-      'Roaming',
-      'Bitcoin'
+      '%LOCALAPPDATA%',
+      'Lnd',
     ], platform);
   }
 
@@ -46,12 +44,20 @@ export function basePath (platform) {
       '$HOME',
       'Library',
       'Application Support',
-      'Bitcoin'
+      'Lnd',
     ], platform);
   }
 
+  if (platform === 'Plan9') {
+    return joinPath([
+      '$home',
+      'lnd',
+    ], platform);
+  }
+
+
   return joinPath([
     '~',
-    '.bitcoin'
+    '.lnd',
   ], platform);
 }
